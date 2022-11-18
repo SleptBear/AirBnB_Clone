@@ -24,13 +24,21 @@ module.exports = {
           max: 30,
         }
       },
+      firstName: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      lastName: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
       email: {
         allowNull: false,
         type: Sequelize.STRING,
         unique: true,
         validate: {
           max: 256,
-        }
+        } //ask instructor about validations here in migration or just models
       },
       hashedPassword: {
         allowNull: false,
