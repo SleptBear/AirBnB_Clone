@@ -8,6 +8,9 @@ module.exports = (sequelize, DataTypes) => {
       const { id, username, email } = this; // context will be the User instance
       return { id, username, email };
     }
+    validatePassword(password) {
+      return bcrypt.compareSync(password, this.hashedPassword.toString());
+    }
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -72,9 +75,6 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       validate: {
         len: [60, 60],
-        validatePassword(password) {
-          return bcrypt.compareSync(password, this.hashedPassword.toString());
-        }
       }
     }
   }, {
