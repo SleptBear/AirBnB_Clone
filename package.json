@@ -1,11 +1,7 @@
 {
-  "dependencies": {
-    "bcryptjs": "^2.4.3"
-  },
   "name": "authenticate-me",
   "version": "1.0.0",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
     "install": "npm --prefix backend install backend",
     "dev:backend": "npm install --prefix backend start",
