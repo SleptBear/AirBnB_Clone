@@ -1,4 +1,4 @@
-# `<name of application here>`
+# `Sanctuary`
 
 ## Database Schema Design
 
