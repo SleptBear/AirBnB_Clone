@@ -1,13 +1,10 @@
 // backend/routes/api/session.js
-const express = require('express')
+const express = require('express');
+const router = express.Router();
 const { setTokenCookie, restoreUser } = require('../../utils/auth');
 const { User } = require('../../db/models');
-
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
-
-const router = express.Router();
-
 
 const validateLogin = [
   check('credential')
@@ -67,15 +64,6 @@ router.get(
     } else return res.json({user: null});
   }
 );
-
-
-
-
-
-
-
-
-
 
 
 
