@@ -12,7 +12,11 @@ module.exports = {
       },
       spotId: {
         allowNull: false,
-        type: Sequelize.NUMBER
+        type: Sequelize.NUMBER,
+        references: {
+          model: "Spots",
+          key: "id"
+        }
       },
       url: {
         allowNull: false,

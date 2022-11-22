@@ -19,7 +19,11 @@ module.exports = {
       },
       ownerId: {
         allowNull: false,
-        type: Sequelize.NUMBER
+        type: Sequelize.NUMBER,
+        references: {
+          model: "Users",
+          key: "id"
+        }
       },
       address: {
         allowNull: false,

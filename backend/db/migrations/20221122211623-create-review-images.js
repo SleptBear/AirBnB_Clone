@@ -11,7 +11,11 @@ module.exports = {
       },
       reviewId: {
         allowNull: false,
-        type: Sequelize.NUMBER
+        type: Sequelize.NUMBER,
+        references: {
+          model: "Reviews",
+          key: "id"
+        }
       },
       url: {
         allowNull: false,
