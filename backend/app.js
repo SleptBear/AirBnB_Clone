@@ -9,11 +9,11 @@ const routes = require('./routes');
 const { environment } = require('./config');
 const isProduction = environment === 'production';
 const app = express();
-console.log(environment);
+// console.log(environment);
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(express.json());
-app.use(routes); // Connect all the routes
+
 // backend/app.js
 
 
@@ -42,7 +42,7 @@ if (!isProduction) {
   );
 
 
-
+  app.use(routes); // Connect all the routes
 
 
 
@@ -81,9 +81,5 @@ app.use((err, _req, res, _next) => {
     stack: isProduction ? null : err.stack
   });
 });
-
-
-// backend/app.js
-// ...
 
 module.exports = app;

@@ -15,10 +15,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Review.init({
-    spotId: DataTypes.NUMBER,
-    userId: DataTypes.NUMBER,
+    spotId: DataTypes.INTEGER,
+    userId: DataTypes.INTEGER,
     review: DataTypes.STRING,
-    stars: DataTypes.NUMBER
+    stars: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Review',
