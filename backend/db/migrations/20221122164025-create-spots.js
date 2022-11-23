@@ -17,7 +17,7 @@ module.exports = {
       },
       ownerId: {
         allowNull: false,
-        type: Sequelize.NUMBER,
+        type: Sequelize.INTEGER,
         references: {
           model: "Users",
           key: "id"
@@ -57,7 +57,7 @@ module.exports = {
       },
       price: {
         allowNull: false,
-        type: Sequelize.DECIMAL
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,

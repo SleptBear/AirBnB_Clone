@@ -16,16 +16,16 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Spot.init({
-    ownerId: DataTypes.NUMBER,
+    ownerId: DataTypes.INTEGER,
     address: DataTypes.STRING,
     city: DataTypes.STRING,
     state: DataTypes.STRING,
     country: DataTypes.STRING,
-    lat: DataTypes.NUMBER,
-    lng: DataTypes.NUMBER,
+    lat: DataTypes.DECIMAL,
+    lng: DataTypes.DECIMAL,
     name: DataTypes.STRING,
     description: DataTypes.STRING,
-    price: DataTypes.NUMBER
+    price: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Spot',
