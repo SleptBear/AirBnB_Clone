@@ -16,7 +16,7 @@ router.get(
             include: [
             {
                     model: Review,
-                    // group: 'spotId',
+                    group: 'Reviews.id',
                     attributes: {
                         include: [
                         [
