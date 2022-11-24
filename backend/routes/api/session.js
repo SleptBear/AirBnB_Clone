@@ -35,9 +35,10 @@ router.post(
       }
 
       await setTokenCookie(res, user);
-
+      const csrfToken = req.csrfToken();
       return res.json({
-        user
+        user,
+        'XSRF-Token': csrfToken
       });
     }
   );
@@ -57,9 +58,11 @@ router.get(
   restoreUser,
   (req, res) => {
     const { user } = req;
+    const csrfToken = req.csrfToken();
     if (user) {
       return res.json({
-        user: user.toSafeObject()
+        user: user.toSafeObject(),
+        'XSRF-Token': csrfToken
       });
     } else return res.json({user: null});
   }

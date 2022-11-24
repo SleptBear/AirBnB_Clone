@@ -5,49 +5,64 @@ if (process.env.NODE_ENV === 'production') {
   options.schema = process.env.SCHEMA;  // define your schema in options object
 }
 
-
-
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('Spots', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      username: {
+      ownerId: {
         allowNull: false,
-        type: Sequelize.STRING,
-        unique: true,
-        validate: {
-          max: 30,
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Users",
+          key: "id"
         }
       },
-      firstName: {
+      address: {
         allowNull: false,
         type: Sequelize.STRING
       },
-      lastName: {
+      city: {
         allowNull: false,
         type: Sequelize.STRING
       },
-      email: {
+      state: {
         allowNull: false,
-        type: Sequelize.STRING,
-        unique: true,
-        validate: {
-          max: 256,
-        } //ask instructor about validations here in migration or just models
+        type: Sequelize.STRING
       },
-      hashedPassword: {
+      country: {
         allowNull: false,
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
+      },
+      lat: {
+        allowNull: false,
+        type: Sequelize.DECIMAL
+      },
+      lng: {
+        allowNull: false,
+        type: Sequelize.DECIMAL
+      },
+      name: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      description: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      price: {
+        allowNull: false,
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       },
       updatedAt: {
         allowNull: false,
@@ -57,7 +72,7 @@ module.exports = {
     }, options);
   },
   async down(queryInterface, Sequelize) {
-    options.tableName = "Users"
+    options.tableName = "Spots"
     await queryInterface.dropTable(options, options);
   }
 };
