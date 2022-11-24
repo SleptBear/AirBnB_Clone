@@ -29,6 +29,30 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Spot',
+    // defaultScope: {
+    //     where: {
+
+    //     }
+    //   },
+    //   scopes: {
+    //   itsReview(spotReview) {
+    //     const { Review } = require('../models')
+    //     return {
+    //       include: [
+    //         { model: Review },
+
+    //       ]
+    //     }
+    //   },
+    //   itsImage(spotPreview) {
+    //     const { SpotImage } = require('../models')
+    //     return {
+    //       include: [
+    //         { model: SpotImage }
+    //       ]
+    //     }
+    //   }
+    // }
   });
   return Spot;
 };

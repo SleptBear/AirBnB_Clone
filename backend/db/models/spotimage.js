@@ -20,6 +20,19 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'SpotImage',
+    // defaultScope: {
+    //   where: {
+    //     preview: true
+    //   }
+    // },
+    // scopes: {
+    //   getAll: function (spotPreview) {
+    //     return {
+
+    //     }
+    //   }
+    // }
+
   });
   return SpotImage;
 };

@@ -2,7 +2,7 @@
 const router = require('express').Router();
 const sessionRouter = require('./session.js');
 const usersRouter = require('./users.js');
-const postsRouter = require('./spots.js')
+const spotsRouter = require('./spots.js')
 const { restoreUser } = require('../../utils/auth.js');
 
 // GET /api/set-token-cookie
@@ -16,7 +16,8 @@ router.use('/session', sessionRouter);
 
 router.use('/users', usersRouter);
 
-router.use('posts', postsRouter);
+router.use('/spots', spotsRouter);
+
 
 router.post('/test', (req, res) => {
   res.json({ requestBody: req.body });
