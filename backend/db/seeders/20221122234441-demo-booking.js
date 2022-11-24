@@ -13,20 +13,20 @@ module.exports = {
      {
       spotId: 1,
       userId: 1,
-      startDate: 2025-11-24,
-      endDate: 2025-11-25
+      startDate: new Date(1994, 12, 10).toDateString(),
+      endDate: new Date(1995, 12, 10).toDateString()
      },
      {
       spotId: 2,
       userId: 2,
-      startDate: 2025-12-24,
-      endDate: 2025-12-25
+      startDate: new Date(1994, 12, 10).toDateString(),
+      endDate: new Date(1996, 12, 10).toDateString()
      },
     {
       spotId: 3,
       userId: 3,
-      startDate: 2026-11-24,
-      endDate: 2026-11-25
+      startDate: new Date(1994, 12, 10).toDateString(),
+      endDate: new Date(1997, 12, 10).toDateString()
     }
     ], {});
    },
