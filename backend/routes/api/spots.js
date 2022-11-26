@@ -12,19 +12,21 @@ router.get(
     async (req, res) => {
         // const spots = await Spot.scope(["itsReview", "itsImage"]).findAll({
         const spots = await Spot.findAll({
-            group: 'Spot.id',
+            // group: 'Spot.id',
             include: [
             {
                     model: Review,
-                    group: 'Reviews.id',
-                    attributes: {
-                        include: [
-                        [
-                        sequelize.fn("AVG", sequelize.col("Reviews.stars")),
-                        "avgRating"
-                        ]
-                        ],
-                    },
+                    // group: 'Reviews.id',
+                    // attributes: {
+                        attributes: ['stars'],
+                        // include: [
+
+                    //     [
+                    //     sequelize.fn("AVG", sequelize.col("Reviews.stars")),
+                    //     "avgRating"
+                    //     ]
+                        // ],
+                    // },
             },
                 {
                     model: SpotImage,
@@ -32,9 +34,12 @@ router.get(
                 }
 
             ],
-
-
         })
+        // const reviews = await Review.findAll({
+        //     attributes: [
+        //         'id', 'spotId',
+        //     ]
+        // })
     //     const spots1 = await Spot.findAll();
     //     for(let ele of spots1) {
     //         ele = ele.toJSON();
@@ -48,7 +53,6 @@ router.get(
 
     //     })
     // })
-
 // console.log(spots)
         let spotsList = []
         spots.forEach(spot => {
@@ -56,19 +60,18 @@ router.get(
             // console.log(spot.toJSON())
             spotsList.push(spot.toJSON())
         })
-// console.log(spotsList)
         spotsList.forEach(spot => {
-            spot.Reviews.forEach(review => {
-                // console.log(review.stars)
-                if(review.stars) {
-                    console.log(review)
-                    spot.avgRatings = review.avgRating
-                }
-            })
+            console.log(spot.Reviews.length)
+                    let avg = 0
+                    for (i = 0; i < spot.Reviews.length; i++) {
+                        console.log(spot.Reviews[i].stars)
+                        avg += spot.Reviews[i].stars
+                    }
+
+                    spot.avgRating = avg/spot.Reviews.length
             if (!spot.Reviews) {
                 spot.review = 'no reviews found'
             }
-// console.log(spot.Reviews)
             spot.SpotImages.forEach(image => {
                 if(image.preview == true) {
                     spot.previewImage = image.url
@@ -79,15 +82,31 @@ router.get(
             })
             delete spot.Reviews
             delete spot.SpotImages
-        })
+//         })
 
         // const spotImage = await SpotImage.findAll({
         //     attributes: ['url']
+// console.log(spotsList)
+//         spotsList.forEach(ele => {
+//             // console.log(spot)
+//             let image = SpotImage.findOne({
+//                 // where: {
+//                 //     spotId: ele.id
+//                 // }
+
+//             });
+//             console.log(image)
+//             // console.log(preview)
+
+        })
+
 
         return res.json({
             spotsList,
         });
     }
 )
+
+
 
 module.exports = router
