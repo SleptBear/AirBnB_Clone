@@ -108,10 +108,35 @@ router.get(
     }
 )
 
+
+const validateCreation = [
+    check('address')
+      .exists({ checkFalsy: true })
+      .isLength({ min: 4 })
+      .withMessage('Please provide a address with at least 4 characters.'),
+    check('city')
+      .isLength({ min: 3 })
+      .withMessage('Please provide a valid city.'),
+    check('state')
+      .exists({ checkFalsy: true })
+      .isLength({ min: 2 })
+      .withMessage('Please do not abbreviate state'),
+    check('country')
+      .exists({ checkFalsy: true })
+      .isLength({ min: 2 })
+      .withMessage('Please provide a country with at least 2 characters.'),
+    check('name')
+      .exists({ checkFalsy: true })
+      .isLength({ min: 2 })
+      .withMessage('Name must be 2 characters or more.'),
+    handleValidationErrors
+  ];
+
 router.post(
     '/',
     requireAuth,
     restoreUser,
+    validateCreation,
     // User.toSafeObject(),
 
     async (req, res) => {
