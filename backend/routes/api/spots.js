@@ -1,9 +1,10 @@
 const express = require('express')
 const router = express.Router();
-const { setTokenCookie, requireAuth } = require('../../utils/auth');
+const { setTokenCookie, requireAuth, restoreUser } = require('../../utils/auth');
 const { User, Spot, Review, SpotImage, booking, ReviewImage, sequelize } = require('../../db/models');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
+const { getCurrentUserById } = require('../../db/models/user');
 
 
 //get all spots
@@ -104,6 +105,30 @@ router.get(
         return res.json({
             spotsList,
         });
+    }
+)
+
+router.post(
+    '/',
+    requireAuth,
+    restoreUser,
+    // User.toSafeObject(),
+
+    async (req, res) => {
+        let { user } = req;
+        // const csrfToken = req.csrfToken();
+        // console.log(user.toSafeObject())
+        user = user.toSafeObject()
+        ownerId = user.id
+        // console.log(ownerId)
+
+        const { address, city, state, country, lat, lng, name, description, price } = req.body;
+
+    const spot = await Spot.createSpot({ ownerId, address, city, state, country, lat, lng, name, description, price})
+
+    return res.json({
+        spot
+    })
     }
 )
 
