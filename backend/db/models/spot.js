@@ -14,13 +14,54 @@ module.exports = (sequelize, DataTypes) => {
       Spot.hasMany(models.SpotImage, { foreignKey: 'spotId', onDelete: 'CASCADE', hooks: true });
       Spot.hasMany(models.Review, { foreignKey: 'spotId', onDelete: 'CASCADE', hooks: true });
     }
+
+    static async createSpot({ownerId, address, city, state, country, lat, lng, name, description, price}) {
+
+      const spot = await Spot.create({
+        ownerId,
+        address,
+        city,
+        state,
+        country,
+        lat,
+        lng,
+        name,
+        description,
+        price
+      });
+      return await Spot.findOne({
+        where: {
+          id: (await Spot.findAll()).length
+        }
+      })
+    }
   }
   Spot.init({
     ownerId: DataTypes.INTEGER,
-    address: DataTypes.STRING,
-    city: DataTypes.STRING,
-    state: DataTypes.STRING,
-    country: DataTypes.STRING,
+    address: {
+      type: DataTypes.STRING,
+      validate:{
+
+      },
+    },
+    city: {
+      type: DataTypes.STRING,
+      validate:{
+
+      },
+    },
+    state: {
+      type: DataTypes.STRING,
+      validate:{
+      isAlpha: true,
+      },
+    },
+    country: {
+      type: DataTypes.STRING,
+      validate:{
+
+      },
+    },
     lat: DataTypes.DECIMAL,
     lng: DataTypes.DECIMAL,
     name: DataTypes.STRING,
