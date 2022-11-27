@@ -35,6 +35,24 @@ module.exports = (sequelize, DataTypes) => {
         }
       })
     }
+    static async updateSpot({ownerId, spotId, address, city, state, country, lat, lng, name, description, price}) {
+      const spot = await Spot.create({
+        ownerId,
+        spotId,
+        address,
+        city,
+        state,
+        country,
+        lat,
+        lng,
+        name,
+        description,
+        price
+
+      })
+      return spot
+    }
+
   }
   Spot.init({
     ownerId: DataTypes.INTEGER,
@@ -52,9 +70,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     state: {
       type: DataTypes.STRING,
-      validate:{
-      isAlpha: true,
-      },
     },
     country: {
       type: DataTypes.STRING,

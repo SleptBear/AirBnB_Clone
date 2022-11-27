@@ -359,5 +359,55 @@ router.get(
     }
 )
 
+router.put(
+    '/:spotId',
+    restoreUser,
+    requireAuth,
+    async (req, res) => {
+    let spot = await Spot.findOne({
+            where: {
+                id: req.params.spotId
+            },
+    })
+    if (spot === null) {
+        res.status(404)
+            res.send({
+                "message": "Spot couldn't be found",
+                "statusCode": 404
+            })
+    }
+console.log(spot.dataValues.id)
+let ownerId = spot.dataValues.id
+let spotId = req.params.spotId
+let address = req.body.address;
+let city = req.body.city;
+let state = req.body.state;
+let country = req.body.country;
+let lat = req.body.lat;
+let lng = req.body.lng;
+let name = req.body.name;
+let description = req.body.description;
+let price = req.body.price;
+
+const updatedSpot = await Spot.updateSpot({
+ownerId,
+spotId,
+address,
+city,
+state,
+country,
+lat,
+lng,
+name,
+description,
+price
+
+})
+    res.json({
+        updatedSpot
+    })
+    }
+)
+
 
 module.exports = router
