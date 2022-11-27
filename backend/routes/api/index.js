@@ -18,6 +18,8 @@ router.use('/users', usersRouter);
 
 router.use('/spots', spotsRouter);
 
+router.use('spots/:spotId', spotsRouter);
+
 
 router.post('/test', (req, res) => {
   res.json({ requestBody: req.body });
