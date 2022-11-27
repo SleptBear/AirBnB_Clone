@@ -7,6 +7,29 @@ const { handleValidationErrors } = require('../../utils/validation');
 const { getCurrentUserById } = require('../../db/models/user');
 
 
+const validateCreation = [
+    check('address')
+      .exists({ checkFalsy: true })
+      .isLength({ min: 4 })
+      .withMessage('Please provide a address with at least 4 characters.'),
+    check('city')
+      .isLength({ min: 3 })
+      .withMessage('Please provide a valid city.'),
+    check('state')
+      .exists({ checkFalsy: true })
+      .isLength({ min: 2 })
+      .withMessage('Please do not abbreviate state'),
+    check('country')
+      .exists({ checkFalsy: true })
+      .isLength({ min: 2 })
+      .withMessage('Please provide a country with at least 2 characters.'),
+    check('name')
+      .exists({ checkFalsy: true })
+      .isLength({ min: 2 })
+      .withMessage('Name must be 2 characters or more.'),
+    handleValidationErrors
+  ];
+
 //get all spots
 router.get(
     '/',
@@ -109,29 +132,8 @@ router.get(
 )
 
 
-const validateCreation = [
-    check('address')
-      .exists({ checkFalsy: true })
-      .isLength({ min: 4 })
-      .withMessage('Please provide a address with at least 4 characters.'),
-    check('city')
-      .isLength({ min: 3 })
-      .withMessage('Please provide a valid city.'),
-    check('state')
-      .exists({ checkFalsy: true })
-      .isLength({ min: 2 })
-      .withMessage('Please do not abbreviate state'),
-    check('country')
-      .exists({ checkFalsy: true })
-      .isLength({ min: 2 })
-      .withMessage('Please provide a country with at least 2 characters.'),
-    check('name')
-      .exists({ checkFalsy: true })
-      .isLength({ min: 2 })
-      .withMessage('Name must be 2 characters or more.'),
-    handleValidationErrors
-  ];
 
+// create and post a spot
 router.post(
     '/',
     requireAuth,
@@ -157,6 +159,51 @@ router.post(
     }
 )
 
+router.post(
+    '/:spotId/images',
+    restoreUser,
+    requireAuth,
+    async (req, res) => {
+        // let imageResponse = []
+        let spotId = req.params.spotId
+        let url = req.body.url
+        let preview = req.body.preview
+        console.log(spotId)
+        // console.log(url)
+        // console.log(preview)
+        if (!await Spot.findByPk(spotId)) {
+            res.status(404)
+            res.send({
 
+                    "message": "Spot couldn't be found",
+                    "statusCode": 404
+
+            })
+        }
+        let spotImage = await SpotImage.addImage({
+            url, preview, spotId })
+        // console.log('STARTS AS', spotImage)
+        // console.log('WANT TO CONVERT TO', spotImage.toJSON())
+        // let resultImage = JSON.stringify(spotImage)
+        // console.log("FINAL RESULT SHOULD LOOK LIKE", resultImage)
+        // let parsed = JSON.stringify(resultImage)
+        // imageResponse.spotId = parsed.spotId
+        // imageResponse.spotId = parsed.url
+        // imageResponse.spotId = parsed.preview
+        // console.log(JSON.stringify(spotImage.dataValues))
+        // imageResponse.id = JSON.stringify(spotImage.dataValues.id)
+        // imageResponse.url = JSON.stringify(spotImage.dataValues.url)
+        // imageResponse.preview = JSON.stringify(spotImage.dataValues.preview)
+            // spotImage.toJSON()
+            JSON.stringify(spotImage);
+            delete spotImage.updatedAt;
+            delete spotImage.createdAt;
+            delete spotImage.spotId;
+        res.json({
+            spotImage
+        });
+     }
+
+)
 
 module.exports = router

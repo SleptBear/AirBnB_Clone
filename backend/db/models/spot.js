@@ -59,7 +59,7 @@ module.exports = (sequelize, DataTypes) => {
     country: {
       type: DataTypes.STRING,
       validate:{
-      
+
       },
     },
     lat: DataTypes.DECIMAL,
