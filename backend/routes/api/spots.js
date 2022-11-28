@@ -513,4 +513,30 @@ router.get(
         }
     )
 
+
+
+
+
+
+router.post(
+    '/:spotId/bookings',
+    restoreUser,
+    requireAuth,
+    async (res, req) => {
+
+        res.json(
+            'beepsAnd the Bops'
+        )
+
+    }
+)
+
+
+
+
+
+
+
+
+
 module.exports = router
