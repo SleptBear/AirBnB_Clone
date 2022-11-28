@@ -139,8 +139,8 @@ router.get(
 // create and post a spot
 router.post(
     '/',
-    requireAuth,
     restoreUser,
+    requireAuth,
     validateCreation,
     // User.toSafeObject(),
 
@@ -150,7 +150,7 @@ router.post(
         // console.log(user.toSafeObject())
         user = user.toSafeObject()
         ownerId = user.id
-        // console.log(ownerId)
+        console.log(ownerId)
 
         const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
