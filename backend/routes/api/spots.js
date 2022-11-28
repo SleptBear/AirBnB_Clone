@@ -359,5 +359,111 @@ router.get(
     }
 )
 
+router.put(
+    '/:spotId',
+    restoreUser,
+    requireAuth,
+    validateCreation,
+    async (req, res) => {
+    let spot = await Spot.findOne({
+            where: {
+                id: req.params.spotId
+            },
+    })
+    if (spot === null) {
+        res.status(404)
+            res.send({
+                "message": "Spot couldn't be found",
+                "statusCode": 404
+            })
+    }
+console.log(spot.dataValues.id)
+let ownerId = spot.dataValues.id
+let spotId = req.params.spotId
+let address = req.body.address;
+let city = req.body.city;
+let state = req.body.state;
+let country = req.body.country;
+let lat = req.body.lat;
+let lng = req.body.lng;
+let name = req.body.name;
+let description = req.body.description;
+let price = req.body.price;
+
+const updatedSpot = await Spot.updateSpot({
+ownerId,
+spotId,
+address,
+city,
+state,
+country,
+lat,
+lng,
+name,
+description,
+price
+
+})
+console.log(updatedSpot)
+    res.json({
+        updatedSpot
+    })
+    }
+)
+
+
+router.post(
+    '/:spotId/reviews',
+    restoreUser,
+    requireAuth,
+    async (req, res) => {
+
+
+
+        let spotId = Number(req.params.spotId)
+        let userId = req.user.dataValues.id
+        let review = req.body.review
+        let stars = req.body.stars
+        // console.log(typeof spotId, typeof userId, typeof review, typeof stars)
+
+
+        if (await Review.findOne({
+            where: {
+                userId: userId,
+                spotId: spotId
+            }
+        })) {
+            res.status(403)
+                res.json({
+                    "message": "User already has a review for this spot",
+                    "statusCode": 403
+                })
+        }
+    let fakeSpot = await Spot.findOne({
+        where: {
+            id: spotId
+        },
+})
+if (fakeSpot === null) {
+    res.status(404)
+        res.json({
+            "message": "Spot couldn't be found",
+            "statusCode": 404
+        })
+}
+
+    const ourReview = Review.createReview({
+        spotId,
+        userId,
+        review,
+        stars
+    })
+    console.log(ourReview)
+        res.json({
+            ourReview
+        })
+    }
+)
+
 
 module.exports = router
