@@ -363,6 +363,7 @@ router.put(
     '/:spotId',
     restoreUser,
     requireAuth,
+    validateCreation,
     async (req, res) => {
     let spot = await Spot.findOne({
             where: {
@@ -403,9 +404,64 @@ description,
 price
 
 })
+console.log(updatedSpot)
     res.json({
         updatedSpot
     })
+    }
+)
+
+
+router.post(
+    '/:spotId/reviews',
+    restoreUser,
+    requireAuth,
+    async (req, res) => {
+
+
+
+        let spotId = Number(req.params.spotId)
+        let userId = req.user.dataValues.id
+        let review = req.body.review
+        let stars = req.body.stars
+        // console.log(typeof spotId, typeof userId, typeof review, typeof stars)
+
+
+        if (await Review.findOne({
+            where: {
+                userId: userId,
+                spotId: spotId
+            }
+        })) {
+            res.status(403)
+                res.json({
+                    "message": "User already has a review for this spot",
+                    "statusCode": 403
+                })
+        }
+    let fakeSpot = await Spot.findOne({
+        where: {
+            id: spotId
+        },
+})
+if (fakeSpot === null) {
+    res.status(404)
+        res.json({
+            "message": "Spot couldn't be found",
+            "statusCode": 404
+        })
+}
+
+    const ourReview = Review.createReview({
+        spotId,
+        userId,
+        review,
+        stars
+    })
+    console.log(ourReview)
+        res.json({
+            ourReview
+        })
     }
 )
 

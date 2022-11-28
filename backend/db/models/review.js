@@ -13,6 +13,20 @@ module.exports = (sequelize, DataTypes) => {
       Review.belongsTo(models.User, { foreignKey: 'userId' });
       Review.belongsTo(models.Spot, { foreignKey: 'spotId' });
     }
+
+    static async createReview({spotId, userId, review, stars}) {
+      let newReview = await Review.create({
+        spotId,
+        userId,
+        review,
+        stars
+      })
+      return await Review.findOne({
+        where: {
+          id: (await Review.findAll()).length
+        }
+      })
+    }
   }
   Review.init({
     spotId: DataTypes.INTEGER,
