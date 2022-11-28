@@ -16,7 +16,7 @@ router.post(
         let possibleReview = await Review.findByPk(Number(reviewId))
         if(possibleReview === null) {
             res.status(404)
-            res.json({
+            return res.json({
                 'message': "review couldn't be found",
                 'statusCode': 404
             })
@@ -25,13 +25,24 @@ router.post(
         //     reviewId,
         //     url
         // })
-        const newImage = await ReviewImage.create({
+        let newImage = await ReviewImage.create({
             reviewId,
-            url
+            url,
         })
-        res.json({
-            newImage
+        // console.log(newImage)
+        let reviewImage = await ReviewImage.findOne({
+            attributes: ['id', 'url'],
+            where: {
+                reviewId: reviewId
+            }
         })
+        // console.log(test)
+
+
+
+        return res.json(
+            reviewImage
+        )
     }
 )
 
@@ -55,7 +66,7 @@ router.get(
             },
             {
                     model: Spot,
-                        attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price' ],
+                    attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price' ],
                         // include: {
                         //     model: SpotImage,
                         //     where: {
@@ -64,29 +75,35 @@ router.get(
                         //     attributes: ['id', 'url']
                         // }
             },
+            {
+                model: ReviewImage,
+                attributes: ['id', 'url']
+            }
 
             ],
 
     })
 
-    // let ReviewImages = await ReviewImage.findAll({
-    //     where:
+    // let spotImage = await SpotImage.findOne({
+    //     where: {
+    //         spotId: userReviews.Spot.id
+    //     }
     // })
 
     let Reviews = []
             userReviews.forEach(spot => {
+
                 Reviews.push(spot.toJSON())
             })
-            // Reviews.forEach(review => {
-            //     let image = await ReviewImage.findAll({
-            //         where: {
-            //             reviewId: review.id
-            //         }
-            //     });
-            //     review.ReviewImages = image
-            // })
-
-    console.log(userReviews)
+            for(i=0; i < Reviews.length; i++) {
+                let spotImage = await SpotImage.findOne({
+                    where: {
+                        spotId: userReviews[i].Spot.id
+                    }
+                })
+                Reviews[i].Spot.previewImage = spotImage.url
+            }
+// in future refactor findOne to findAll in case of multiple images
         res.json({
             Reviews
         })
