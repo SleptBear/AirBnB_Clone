@@ -5,7 +5,7 @@ const { User, Spot, Review, SpotImage, booking, ReviewImage, sequelize } = requi
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const { getCurrentUserById } = require('../../db/models/user');
-const review = require('../../db/models/review');
+// const review = require('../../db/models/review');
 
 router.post(
     '/:reviewId/images',
@@ -21,7 +21,11 @@ router.post(
                 'statusCode': 404
             })
         }
-        const newImage = await ReviewImage.createImage({
+        // const newImage = await ReviewImage.createImage({
+        //     reviewId,
+        //     url
+        // })
+        const newImage = await ReviewImage.create({
             reviewId,
             url
         })
