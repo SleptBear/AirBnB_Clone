@@ -175,9 +175,9 @@ router.post(
         ownerId, address, city, state, country, lat, lng, name, description, price})
         console.log(spot)
 
-    return res.json({
+    return res.json(
         spot
-    })
+    )
     }
 )
 
@@ -221,9 +221,9 @@ router.post(
             delete spotImage.updatedAt;
             delete spotImage.createdAt;
             delete spotImage.spotId;
-        res.json({
+        res.json(
             spotImage
-        });
+        );
      }
 
 )
@@ -300,7 +300,7 @@ router.get(
     async (req, res) => {
 
         // console.log(req.params.spotId)
-        const owner = await User.findAll({
+        const owner = await User.findOne({
             where: {
                 id: req.user.dataValues.id
             },
@@ -354,7 +354,7 @@ router.get(
                         avg += spot.Reviews[i].stars
                     }
 
-                    spot.avgRating = avg/spot.Reviews.length
+                    spot.avgStarRating = avg/spot.Reviews.length
             if (!spot.Reviews) {
                 spot.review = 'no reviews found'
             }
@@ -371,9 +371,9 @@ router.get(
             delete spot.Reviews
             spot.Owner = owner
         })
-        return res.json({
-            Spots
-        })
+        return res.json(
+            Spots[0]
+        )
     }
 )
 
@@ -384,9 +384,12 @@ router.put(
     validateCreation,
     async (req, res) => {
     let spot = await Spot.findOne({
+        // attributes: { exclude: ['createdAt', 'updatedAt'] },
+        attributes: ['id', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'description', 'price' ],
             where: {
                 id: req.params.spotId
             },
+
     })
     if (spot === null) {
         res.status(404)
@@ -432,10 +435,12 @@ await spot.save();
 // price
 
 // })
+
+
 console.log(spot)
-    res.json({
+    res.json(
         spot
-    })
+    )
     }
 )
 
@@ -480,16 +485,23 @@ if (fakeSpot === null) {
         })
 }
 
-    const ourReview = Review.createReview({
+    // let ourReview = Review.createReview({
+    //     spotId,
+    //     userId,
+    //     review,
+    //     stars
+    // })
+
+    let newReview = await Review.create({
         spotId,
         userId,
         review,
         stars
-    })
-    console.log(ourReview)
-        res.json({
-            ourReview
-        })
+      })
+    // console.log(newReview)
+        res.json(
+            newReview
+        )
     }
 )
 
@@ -561,8 +573,11 @@ router.delete(
         }
 
 
-
-        res.json('Nothing occured please try request again')
+        res.status(404)
+        res.json({
+            "message": "Spot couldn't be found",
+            "statusCode": 404
+            })
     }
 )
 

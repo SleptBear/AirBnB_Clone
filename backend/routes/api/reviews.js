@@ -16,7 +16,7 @@ router.post(
         let possibleReview = await Review.findByPk(Number(reviewId))
         if(possibleReview === null) {
             res.status(404)
-            res.json({
+            return res.json({
                 'message': "review couldn't be found",
                 'statusCode': 404
             })
@@ -29,7 +29,7 @@ router.post(
             reviewId,
             url
         })
-        res.json({
+        return res.json({
             newImage
         })
     }
