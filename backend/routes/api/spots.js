@@ -38,8 +38,21 @@ router.get(
     '/',
     async (req, res) => {
         // const spots = await Spot.scope(["itsReview", "itsImage"]).findAll({
+        let { page, size } = req.query;
+        // console.log(page, size);
+        page = Number(page);
+        size = Number(size);
+
+        if(isNaN(page)) page = 0;
+        if(page>10) page = 10;
+        if(isNaN(size)) size = 20;
+        if(size>20) size = 20;
+
+
         const spots = await Spot.findAll({
             // group: 'Spot.id',
+            limit: size,
+            offset: (page-1) * size,
             include: [
             {
                     model: Review,
@@ -88,10 +101,10 @@ router.get(
             Spots.push(spot.toJSON())
         })
         Spots.forEach(spot => {
-            console.log(spot.Reviews.length)
+            // console.log(spot.Reviews.length)
                     let avg = 0
                     for (i = 0; i < spot.Reviews.length; i++) {
-                        console.log(spot.Reviews[i].stars)
+                        // console.log(spot.Reviews[i].stars)
                         avg += spot.Reviews[i].stars
                     }
 
@@ -130,6 +143,8 @@ router.get(
 
         return res.json({
             Spots,
+            page,
+            size
         });
     }
 )
