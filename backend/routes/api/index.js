@@ -6,6 +6,7 @@ const spotsRouter = require('./spots.js');
 const reviewsRouter = require('./reviews.js');
 const spotImagesRouter = require('./spot-images.js');
 const reviewImagesRouter = require('./review-images.js');
+const bookingsRouter = require('./bookings.js');
 const { restoreUser } = require('../../utils/auth.js');
 
 // GET /api/set-token-cookie
@@ -28,6 +29,8 @@ router.use('/reviews', reviewsRouter);
 router.use('/spot-images', spotImagesRouter);
 
 router.use('/review-images', reviewImagesRouter);
+
+router.use('/bookings', bookingsRouter);
 
 
 router.post('/test', (req, res) => {

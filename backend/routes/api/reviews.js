@@ -119,16 +119,26 @@ router.put(
 
         let review = await Review.findByPk(Number(reviewId));
 
-        if(review === null) {
+        if(req.body === null) {
             res.status(400);
-            res.json({
+            return res.json({
                 "message": "Validation error",
                 "statusCode": 400,
                 "errors": [
-                    "Review text is required",
-                    "Stars must be an integer from 1 to 5",
-      ]
-            })
+                  "Review text is required",
+                  "Stars must be an integer from 1 to 5",
+                ]
+              })
+        }
+
+
+
+        if(review === null) {
+            res.status(400);
+            res.json({
+                "message": "Review couldn't be found",
+                "statusCode": 404
+              })
         }
         let newReview = req.body.review;
         let stars = req.body.stars;
