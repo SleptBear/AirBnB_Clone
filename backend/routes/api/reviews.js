@@ -66,7 +66,7 @@ router.get(
             },
             {
                     model: Spot,
-                        attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price' ],
+                    attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price' ],
                         // include: {
                         //     model: SpotImage,
                         //     where: {
@@ -75,29 +75,35 @@ router.get(
                         //     attributes: ['id', 'url']
                         // }
             },
+            {
+                model: ReviewImage,
+                attributes: ['id', 'url']
+            }
 
             ],
 
     })
 
-    // let ReviewImages = await ReviewImage.findAll({
-    //     where:
+    // let spotImage = await SpotImage.findOne({
+    //     where: {
+    //         spotId: userReviews.Spot.id
+    //     }
     // })
 
     let Reviews = []
             userReviews.forEach(spot => {
+
                 Reviews.push(spot.toJSON())
             })
-            // Reviews.forEach(review => {
-            //     let image = await ReviewImage.findAll({
-            //         where: {
-            //             reviewId: review.id
-            //         }
-            //     });
-            //     review.ReviewImages = image
-            // })
-
-    console.log(userReviews)
+            for(i=0; i < Reviews.length; i++) {
+                let spotImage = await SpotImage.findOne({
+                    where: {
+                        spotId: userReviews[i].Spot.id
+                    }
+                })
+                Reviews[i].Spot.previewImage = spotImage.url
+            }
+// in future refactor findOne to findAll in case of multiple images
         res.json({
             Reviews
         })

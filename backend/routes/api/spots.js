@@ -518,6 +518,10 @@ router.get(
                 {
                     model: User,
                     attributes: ['id', 'firstName', 'lastName']
+                },
+                {
+                    model: ReviewImage,
+                    attributes: ['id', 'url']
                 }
             ],
         })
