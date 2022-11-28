@@ -513,4 +513,42 @@ router.get(
         }
     )
 
+router.delete(
+    '/:spotId',
+    restoreUser,
+    requireAuth,
+    async (req, res) => {
+        let spotId = req.params.spotId;
+        let userId = req.user.id
+
+        let spot = await Spot.findOne({
+            where: {
+                id: spotId
+            }
+        });
+        if(spot === null) {
+            res.status(404);
+            return res.json({
+            "message": "Spot couldn't be found",
+            "statusCode": 404
+            })
+        }
+
+        console.log(spot.ownerId)
+        console.log(spotId)
+        console.log(userId)
+        if (spot.ownerId === userId) {
+            await spot.destroy()
+            return res.json({
+                "message": "Successfully deleted",
+                "statusCode": 200
+              })
+        }
+
+
+
+        res.json('Nothing occured please try request again')
+    }
+)
+
 module.exports = router
