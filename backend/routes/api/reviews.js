@@ -35,7 +35,98 @@ router.post(
     }
 )
 
+router.get(
+    '/current',
+    restoreUser,
+    requireAuth,
+    async (req, res) => {
+        let user = req.user.dataValues
+        // console.log(user)
+        // console.log(user.id)
+    let userReviews = await Review.findAll({
+        where: {
+            userId: user.id
+        },
+        include: [
 
+            {
+                model: User,
+                attributes: ['id', 'firstName', 'lastName']
+            },
+            {
+                    model: Spot,
+                        attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price' ],
+                        // include: {
+                        //     model: SpotImage,
+                        //     where: {
+                        //        preview: true
+                        //     },
+                        //     attributes: ['id', 'url']
+                        // }
+            },
+
+            ],
+
+    })
+
+    // let ReviewImages = await ReviewImage.findAll({
+    //     where:
+    // })
+
+    let Reviews = []
+            userReviews.forEach(spot => {
+                Reviews.push(spot.toJSON())
+            })
+            // Reviews.forEach(review => {
+            //     let image = await ReviewImage.findAll({
+            //         where: {
+            //             reviewId: review.id
+            //         }
+            //     });
+            //     review.ReviewImages = image
+            // })
+
+    console.log(userReviews)
+        res.json({
+            Reviews
+        })
+    }
+)
+
+router.put(
+    '/:reviewId',
+    restoreUser,
+    requireAuth,
+    async (req, res) => {
+        let reviewId = req.params.reviewId
+
+        let review = await Review.findByPk(Number(reviewId));
+
+        if(review === null) {
+            res.status(400);
+            res.json({
+                "message": "Validation error",
+                "statusCode": 400,
+                "errors": [
+                    "Review text is required",
+                    "Stars must be an integer from 1 to 5",
+      ]
+            })
+        }
+        let newReview = req.body.review;
+        let stars = req.body.stars;
+
+        review.review = newReview;
+        review.stars = stars;
+
+        await review.save();
+
+
+        res.json(
+            review
+        )
+    }
+)
 
 
 

@@ -479,4 +479,38 @@ if (fakeSpot === null) {
 )
 
 
+router.get(
+    '/:spotId/reviews',
+    async (req, res) => {
+        let spotId = req.params.spotId
+        let spotReviews = await Review.findAll({
+            where: {
+                spotId: spotId
+            },
+            include: [
+                {
+                    model: User,
+                    attributes: ['id', 'firstName', 'lastName']
+                }
+            ],
+        })
+        console.log(spotReviews)
+        if(spotReviews.length === 0) {
+            res.status(404)
+            return res.json({
+                'message': "spot couldn't be found",
+                "statusCode": 404
+            })
+        }
+
+        let Reviews = []
+        spotReviews.forEach(spot => {
+            Reviews.push(spot.toJSON())
+        })
+        res.json({
+            Reviews
+        })
+        }
+    )
+
 module.exports = router
