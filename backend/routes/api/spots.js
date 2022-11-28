@@ -7,6 +7,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 const { getCurrentUserById } = require('../../db/models/user');
 
 
+
 const validateCreation = [
     check('address')
       .exists({ checkFalsy: true })
@@ -154,7 +155,6 @@ router.post(
         const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
     const spot = await Spot.createSpot({
-        exclude:
         ownerId, address, city, state, country, lat, lng, name, description, price})
         console.log(spot.toJSON())
     return res.json({
@@ -390,23 +390,33 @@ let name = req.body.name;
 let description = req.body.description;
 let price = req.body.price;
 
-const updatedSpot = await Spot.updateSpot({
-ownerId,
-spotId,
-address,
-city,
-state,
-country,
-lat,
-lng,
-name,
-description,
-price
+spot.address = address;
+spot.city = city;
+spot.state = state;
+spot.country = country;
+spot.lat = lat;
+spot.lng = lng;
+spot.name = name;
+spot.description = description;
+spot.price = price;
+await spot.save();
+// const updatedSpot = await Spot.updateSpot({
+// ownerId,
+// spotId,
+// address,
+// city,
+// state,
+// country,
+// lat,
+// lng,
+// name,
+// description,
+// price
 
-})
-console.log(updatedSpot)
+// })
+console.log(spot)
     res.json({
-        updatedSpot
+        spot
     })
     }
 )
