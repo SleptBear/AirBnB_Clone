@@ -148,17 +148,18 @@ router.post(
         let { user } = req;
         // const csrfToken = req.csrfToken();
         // console.log(user.toSafeObject())
-        console.log(user)
+        // console.log(user)
         user = user.toSafeObject()
         ownerId = user.id
-        console.log(ownerId)
+        // console.log(ownerId)
         // console.log(typeof ownerId)
 
         const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
     const spot = await Spot.createSpot({
         ownerId, address, city, state, country, lat, lng, name, description, price})
-        // console.log(spot.toJSON())
+        console.log(spot)
+
     return res.json({
         spot
     })
@@ -458,7 +459,7 @@ router.post(
 })
 if (fakeSpot === null) {
     res.status(404)
-        res.json({
+       return res.json({
             "message": "Spot couldn't be found",
             "statusCode": 404
         })
