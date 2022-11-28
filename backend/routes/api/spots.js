@@ -43,7 +43,7 @@ router.get(
         page = Number(page);
         size = Number(size);
 
-        if(isNaN(page)) page = 0;
+        if(isNaN(page)) page = 1;
         if(page>10) page = 10;
         if(isNaN(size)) size = 20;
         if(size>20) size = 20;
