@@ -25,13 +25,24 @@ router.post(
         //     reviewId,
         //     url
         // })
-        const newImage = await ReviewImage.create({
+        let newImage = await ReviewImage.create({
             reviewId,
-            url
+            url,
         })
-        return res.json({
-            newImage
+        // console.log(newImage)
+        let reviewImage = await ReviewImage.findOne({
+            attributes: ['id', 'url'],
+            where: {
+                reviewId: reviewId
+            }
         })
+        // console.log(test)
+
+
+
+        return res.json(
+            reviewImage
+        )
     }
 )
 
