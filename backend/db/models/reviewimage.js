@@ -12,6 +12,14 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       ReviewImage.belongsTo(models.Review, { foreignKey: 'reviewId' });
     }
+    static async createImage({reviewId, url}) {
+      let newImg = await ReviewImage.create({
+        reviewId,
+        url
+      });
+      return newImg
+    }
+
   }
   ReviewImage.init({
     reviewId: DataTypes.INTEGER,
