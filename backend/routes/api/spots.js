@@ -422,25 +422,19 @@ spot.name = name;
 spot.description = description;
 spot.price = price;
 await spot.save();
-// const updatedSpot = await Spot.updateSpot({
-// ownerId,
-// spotId,
-// address,
-// city,
-// state,
-// country,
-// lat,
-// lng,
-// name,
-// description,
-// price
-
-// })
+await spot.reload({
+    exclude: [
+        'id'
+    ]
+})
 
 
-console.log(spot)
+console.log(spot.dataValues)
+let lessSpot = spot.dataValues
+delete lessSpot.id
+
     res.json(
-        spot
+        lessSpot
     )
     }
 )
