@@ -1,10 +1,11 @@
 const express = require('express')
 const router = express.Router();
 const { setTokenCookie, requireAuth, restoreUser } = require('../../utils/auth');
-const { User, Spot, Review, SpotImage, booking, ReviewImage, sequelize } = require('../../db/models');
+const { User, Spot, Review, SpotImage, Booking, ReviewImage, sequelize } = require('../../db/models');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const { getCurrentUserById } = require('../../db/models/user');
+const user = require('../../db/models/user');
 
 
 
@@ -584,5 +585,97 @@ router.delete(
             })
     }
 )
+
+router.post(
+    '/:spotIdForBooking/bookings',
+    restoreUser,
+    requireAuth,
+    async (req, res) => {
+        let userId = req.user.id;
+        let spotId = Number(req.params.spotIdForBooking);
+        let startDate = new Date(req.body.startDate);
+        let endDate = new Date(req.body.endDate);
+console.log(typeof userId, typeof spotId, typeof startDate, typeof endDate)
+
+       let test =  await Booking.findOne({
+            where: {
+                spotId: spotId,
+                userId: userId,
+                startDate: startDate,
+                endDate: endDate
+            }
+        })
+console.log(test)
+
+
+
+if(!(await Spot.findOne({
+    where: {
+        id: spotId
+    }
+}))) {
+    res.status(403);
+    return res.json({
+        "message": "Spot couldn't be found",
+        "statusCode": 404
+      })
+}
+
+
+        if(test) {
+            res.status(400);
+            return res.json({
+                "message": "Sorry, this spot is already booked for the specified dates",
+                "statusCode": 403,
+                "errors": [
+                  "Start date conflicts with an existing booking",
+                  "End date conflicts with an existing booking"
+                ]
+              })
+        }
+
+
+        let booking = await Booking.create({
+            spotId,
+            userId,
+            startDate,
+            endDate
+
+        })
+        res.json(booking)
+    }
+)
+
+
+
+
+router.get(
+    '/:spotIdForBooking/bookings',
+    restoreUser,
+    requireAuth,
+    async (req, res) => {
+
+        let spotId = Number(req.params.spotIdForBooking)
+        // console.log(typeof spotId)
+
+        let spotBookings = await Booking.findAll({
+            where: {
+                spotId: spotId
+            }
+        });
+// console.log(spotBookings[0])
+        if(!spotBookings[0]) {
+            res.status(404);
+            return res.json({
+                "message": "Spot couldn't be found",
+                "statusCode": 404
+              })
+        }
+
+        res.json(spotBookings)
+    }
+)
+
+
 
 module.exports = router

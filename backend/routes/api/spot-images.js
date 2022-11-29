@@ -29,15 +29,15 @@ router.delete(
         }
 
         let spotImageData = spotImage.dataValues
-        // console.log(spotImageData)
+        console.log(spotImageData)
 
         let spot = await Spot.findByPk(spotImageData.spotId)
-        // console.log(spot.dataValues)
+        console.log(spot.dataValues)
         spot = spot.dataValues
         // console.log(spot)
-        // console.log( spot.ownerId)
-        // console.log( user.id)
-        // console.log(spot.ownerId === user.id)
+        console.log( spot.ownerId)
+        console.log( user.id)
+        console.log(spot.ownerId === user.id)
 
         if((spot.ownerId === user.id)) {
             await spotImage.destroy();
@@ -47,6 +47,8 @@ router.delete(
                 "statusCode": 200
             })
         }
+
+        res.json('nothing occured')
 
     }
 )
