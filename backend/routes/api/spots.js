@@ -284,9 +284,9 @@ async (req, res) => {
                 if (image.preview === false) {
                     spot.preview = 'no preview can be shown'
                 }
-                if (!image.preview) {
-                    spot.preview = 'no image uploaded'
-                }
+                // if (!image.preview) {
+                //     spot.preview = 'no image uploaded'
+                // }
             })
             delete spot.Reviews
             delete spot.SpotImages
