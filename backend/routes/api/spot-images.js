@@ -20,7 +20,7 @@ router.delete(
             }
         });
         console.log(spotImage)
-        if(spotImage === null) {
+        if(!spotImage) {
             res.status(404)
             return res.json({
             "message": "Spot Image couldn't be found",
@@ -35,9 +35,9 @@ router.delete(
         console.log(spot.dataValues)
         spot = spot.dataValues
         // console.log(spot)
-        console.log( spot.ownerId)
-        console.log( user.id)
-        console.log(spot.ownerId === user.id)
+        // console.log( spot.ownerId)
+        // console.log( user.id)
+        // console.log(spot.ownerId === user.id)
 
         if((spot.ownerId === user.id)) {
             await spotImage.destroy();
@@ -48,7 +48,7 @@ router.delete(
             })
         }
 
-        res.json('nothing occured')
+        res.json('User requires authorization')
 
     }
 )
