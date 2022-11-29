@@ -175,7 +175,7 @@ router.post(
     const spot = await Spot.createSpot({
         ownerId, address, city, state, country, lat, lng, name, description, price})
         console.log(spot)
-
+        res.status(201)
     return res.json(
         spot
     )
@@ -254,7 +254,7 @@ async (req, res) => {
         },
             {
                 model: SpotImage,
-                // attributes: ['url']
+                attributes: ['url']
             }
 
         ],
@@ -278,15 +278,26 @@ async (req, res) => {
                 spot.review = 'no reviews found'
             }
             spot.SpotImages.forEach(image => {
-                if(image.preview == true) {
+                if(image.preview === true) {
                     spot.previewImage = image.url
                 }
-                if (image.preview == false) {
+                if (image.preview === false) {
                     spot.preview = 'no preview can be shown'
+                }
+                if (!image.preview) {
+                    spot.preview = 'no image uploaded'
                 }
             })
             delete spot.Reviews
             delete spot.SpotImages
+            if(!spot.avgRating) {
+                spot.avgRating = 'no reviews'
+            }
+
+            if(!spot.previewImage) {
+                spot.previewImage = 'No image uploaded'
+            }
+            // spot.previewImage = 'image url'
         })
 
 
@@ -328,7 +339,7 @@ router.get(
             },
                 {
                     model: SpotImage,
-                    // attributes: ['url']
+                    attributes: ['id', 'url', 'preview']
                 }
 
             ],
@@ -342,11 +353,9 @@ router.get(
             })
          }
             let Spots = []
-        // spots.forEach(spot => {
-        //     // console.log(spot)
-        //     // console.log(spot.toJSON())
+
             Spots.push(spots.toJSON())
-        // })
+
         Spots.forEach(spot => {
             console.log(spot.Reviews.length)
                     let avg = 0
@@ -368,6 +377,13 @@ router.get(
                 }
 
             })
+
+            if(!spot.avgStarRating) {
+                spot.avgStarRating = 'no reviews'
+            }
+
+            delete spot.previewImage
+
             spot.numReviews = spot.Reviews.length
             delete spot.Reviews
             spot.Owner = owner
@@ -399,7 +415,7 @@ router.put(
                 "statusCode": 404
             })
     }
-console.log(spot.dataValues.id)
+console.log(typeof spot.dataValues.id)
 let ownerId = spot.dataValues.id
 let spotId = req.params.spotId
 let address = req.body.address;
@@ -422,19 +438,10 @@ spot.name = name;
 spot.description = description;
 spot.price = price;
 await spot.save();
-await spot.reload({
-    exclude: [
-        'id'
-    ]
-})
-
-
-console.log(spot.dataValues)
-let lessSpot = spot.dataValues
-delete lessSpot.id
+await spot.reload()
 
     res.json(
-        lessSpot
+        spot
     )
     }
 )
@@ -494,6 +501,7 @@ if (fakeSpot === null) {
         stars
       })
     // console.log(newReview)
+      res.status(201);
         res.json(
             newReview
         )
@@ -608,7 +616,7 @@ if(!(await Spot.findOne({
         id: spotId
     }
 }))) {
-    res.status(403);
+    res.status(404);
     return res.json({
         "message": "Spot couldn't be found",
         "statusCode": 404
@@ -617,7 +625,7 @@ if(!(await Spot.findOne({
 
 
         if(test) {
-            res.status(400);
+            res.status(403);
             return res.json({
                 "message": "Sorry, this spot is already booked for the specified dates",
                 "statusCode": 403,
@@ -629,14 +637,14 @@ if(!(await Spot.findOne({
         }
 
 
-        let booking = await Booking.create({
+        let Bookings = await Booking.create({
             spotId,
             userId,
             startDate,
             endDate
 
         })
-        res.json(booking)
+        res.json(Bookings)
     }
 )
 
@@ -651,14 +659,34 @@ router.get(
 
         let spotId = Number(req.params.spotIdForBooking)
         // console.log(typeof spotId)
+        let userId = Number(req.user.id)
 
-        let spotBookings = await Booking.findAll({
+        // let Bookings = await Booking.findAll({
+        //     where: {
+        //         spotId: spotId
+        //     },
+        //     attributes: ['spotId', 'startDate', 'endDate']
+        // })
+
+        // console.log(userId, spotId)
+        // if (userId === spotId){
+        // return res.json({Bookings})
+        // }
+
+
+
+        let Bookings = await Booking.findAll({
             where: {
                 spotId: spotId
+            },
+            include: [
+                { model: User,
+                attributes: ['id', 'firstName', 'lastName']
             }
+            ]
         });
 // console.log(spotBookings[0])
-        if(!spotBookings[0]) {
+        if(!Bookings[0]) {
             res.status(404);
             return res.json({
                 "message": "Spot couldn't be found",
@@ -666,7 +694,7 @@ router.get(
               })
         }
 
-        res.json(spotBookings)
+        res.json({Bookings})
     }
 )
 

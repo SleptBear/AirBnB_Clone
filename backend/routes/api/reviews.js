@@ -134,7 +134,7 @@ router.put(
 
 
         if(review === null) {
-            res.status(400);
+            res.status(404);
             res.json({
                 "message": "Review couldn't be found",
                 "statusCode": 404
