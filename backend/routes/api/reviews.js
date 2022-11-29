@@ -155,6 +155,43 @@ router.put(
     }
 )
 
+router.delete(
+    '/:reviewId',
+    restoreUser,
+    requireAuth,
+    async (req, res) => {
+        let user = req.user;
+        let reviewId = Number(req.params.reviewId);
+
+        let review = await Review.findOne({
+            where: {
+                id: reviewId,
+                // userId: Number(user.id)
+            }
+        })
+
+        if(!review) {
+            res.status(404);
+           return res.json({
+                "message": "Review couldn't be found",
+                "statusCode": 404
+              })
+        }
+
+        if(Number(user.id) === review.userId) {
+            await review.destroy()
+            return res.json({
+                "message": "Successfully deleted",
+                "statusCode": 200
+              })
+        }
+
+
+
+        res.json('slipery slope')
+    }
+)
+
 
 
 module.exports = router
