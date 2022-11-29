@@ -16,13 +16,58 @@ router.get(
     async (req, res) => {
         let user = req.user
 
-        let userBookings = await Booking.findAll({
+        let Bookings = await Booking.findAll({
             where: {
                 userId: user.id
-            }
+            },
+            include: [
+                {
+                    model: Spot,
+                    attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price'],
+                    include: [{
+                        model: SpotImage,
+                        attributes: ['url']
+                    }]
+                },
+                // {
+                //     model: SpotImage,
+                //     through: { include: model.Spot }
+                // }
+            ]
         });
+        //     let spotIds = []
+        // Bookings.forEach(spot => {
+        //     if(!spot.Spot.SpotImages[0]) {
+        //         spot.Spot.previewImage = 'no images uploaded'
+        //     } else {
+        //         spot.Spot.previewImage = 'image.url'
+        //     }
+        // })
 
-        res.json(userBookings)
+
+        // let previews = await SpotImage.findAll({
+        //     attributes: ['id', 'spotId', 'url', 'preview']
+        // })
+        // Bookings.forEach(spot => {
+        //     for(i=0; i<previews.length; i++) {
+        //         if(spotIds[])
+        //     }
+
+        // })
+
+        // Bookings.SpotImages.forEach(image => {
+        //     let url = image.url
+        //     if(url) {
+        //         Bookings.previewImage = url
+        //     }
+        // })
+        // let images = await SpotImage.findAll({
+        //     where: {
+        //         spotId:
+        //     }
+        // })
+
+        res.json({Bookings})
     }
 )
 
