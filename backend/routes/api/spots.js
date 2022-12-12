@@ -194,7 +194,8 @@ router.post(
         console.log(spotId)
         // console.log(url)
         // console.log(preview)
-        if (!await Spot.findByPk(spotId)) {
+        let spot = await Spot.findByPk(spotId)
+        if (!spot) {
             res.status(404)
             res.send({
 
@@ -203,8 +204,8 @@ router.post(
 
             })
         }
-        let spotImage = await SpotImage.addImage({
-            url, preview, spotId })
+        // let spotImage = await SpotImage.addImage({
+        //     url, preview, spotId })
         // console.log('STARTS AS', spotImage)
         // console.log('WANT TO CONVERT TO', spotImage.toJSON())
         // let resultImage = JSON.stringify(spotImage)
@@ -218,12 +219,18 @@ router.post(
         // imageResponse.url = JSON.stringify(spotImage.dataValues.url)
         // imageResponse.preview = JSON.stringify(spotImage.dataValues.preview)
             // spotImage.toJSON()
-            JSON.stringify(spotImage);
-            delete spotImage.updatedAt;
-            delete spotImage.createdAt;
-            delete spotImage.spotId;
+            // JSON.stringify(spotImage);
+            // delete spotImage.updatedAt;
+            // delete spotImage.createdAt;
+            // delete spotImage.spotId;
+
+        spot.createSpotImage({
+            spotId,
+            url,
+            preview
+        })
         res.json(
-            spotImage
+            spot
         );
      }
 
@@ -469,7 +476,7 @@ router.post(
             }
         })) {
             res.status(403)
-                res.json({
+                return res.json({
                     "message": "User already has a review for this spot",
                     "statusCode": 403
                 })
@@ -552,14 +559,16 @@ router.delete(
     restoreUser,
     requireAuth,
     async (req, res) => {
-        let spotId = req.params.spotId;
+        let spotId = Number(req.params.spotId);
         let userId = req.user.id
 
-        let spot = await Spot.findOne({
-            where: {
-                id: spotId
-            }
-        });
+        // let spot = await Spot.findOne({
+        //     where: {
+        //         id: spotId
+        //     }
+        // });
+        let spot = await Spot.findByPk(spotId)
+
         if(spot === null) {
             res.status(404);
             return res.json({
@@ -567,7 +576,7 @@ router.delete(
             "statusCode": 404
             })
         }
-
+        console.log(spot)
         console.log(spot.ownerId)
         console.log(spotId)
         console.log(userId)
@@ -580,11 +589,11 @@ router.delete(
         }
 
 
-        res.status(404)
-        res.json({
-            "message": "Spot couldn't be found",
-            "statusCode": 404
-            })
+        // res.status(404)
+        // res.json({
+        //     "message": "Spot couldn't be found",
+        //     "statusCode": 404
+        //     })
     }
 )
 
