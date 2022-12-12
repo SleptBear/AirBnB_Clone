@@ -26,7 +26,7 @@ router.get(
                     attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price'],
                     include: [{
                         model: SpotImage,
-                        attributes: ['url']
+                        // attributes: ['url']
                     }]
                 },
                 // {
@@ -66,6 +66,9 @@ router.get(
         //         spotId:
         //     }
         // })
+        // console.log(Bookings)
+        let test = Bookings[0].dataValues
+        console.log(test)
 
         res.json({Bookings})
     }
