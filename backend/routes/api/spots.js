@@ -49,11 +49,15 @@ router.get(
         if(isNaN(size)) size = 20;
         if(size>20) size = 20;
 
+        let pagination = {};
+        pagination.limit = page * (page - 1);
+        pagination.offset = size
+
 
         const spots = await Spot.findAll({
             // group: 'Spot.id',
-            limit: size,
-            offset: (page-1) * size,
+            // limit: size,
+            // offset: (page-1) * size,
             include: [
             {
                     model: Review,
@@ -75,6 +79,7 @@ router.get(
                 }
 
             ],
+            // ...pagination
         })
         // const reviews = await Review.findAll({
         //     attributes: [
@@ -224,18 +229,23 @@ router.post(
             // delete spotImage.createdAt;
             // delete spotImage.spotId;
 
+            let id = spotId
+
+            let returnObject = {id, url, preview}
+
         spot.createSpotImage({
             spotId,
             url,
             preview
         })
         res.json(
-            spot
-        );
+            returnObject
+    );
      }
 
 )
 
+//get current users spots
 router.get('/current', restoreUser, requireAuth,
 async (req, res) => {
     // console.log(req.user.dataValues.id)
@@ -261,7 +271,7 @@ async (req, res) => {
         },
             {
                 model: SpotImage,
-                attributes: ['url']
+                // attributes: ['url']
             }
 
         ],
@@ -313,7 +323,7 @@ async (req, res) => {
         });
     }
 )
-
+//get details of spot by Id
 router.get(
     '/:spotId',
     async (req, res) => {
@@ -346,7 +356,7 @@ router.get(
             },
                 {
                     model: SpotImage,
-                    attributes: ['id', 'url', 'preview']
+                    // attributes: ['id', 'url', 'preview']
                 }
 
             ],
