@@ -177,7 +177,7 @@ router.post(
 
         const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
-    const spot = await Spot.createSpot({
+    const spot = await Spot.create({
         ownerId, address, city, state, country, lat, lng, name, description, price})
         console.log(spot)
         res.status(201)
