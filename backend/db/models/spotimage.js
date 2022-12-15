@@ -34,7 +34,8 @@ module.exports = (sequelize, DataTypes) => {
     preview: DataTypes.BOOLEAN
   }, {
     sequelize,
-    modelName: 'SpotImage', defaultScope: {
+    modelName: 'SpotImage',
+    defaultScope: {
       attributes: {
         exclude: ['createdAt', 'updatedAt', 'spotId']
       }

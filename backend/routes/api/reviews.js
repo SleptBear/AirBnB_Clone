@@ -29,19 +29,21 @@ router.post(
             reviewId,
             url,
         })
-        // console.log(newImage)
-        let reviewImage = await ReviewImage.findOne({
-            attributes: ['id', 'url'],
-            where: {
-                reviewId: reviewId
-            }
-        })
+        console.log(newImage)
+        let imageData = newImage.dataValues
+        delete imageData.reviewId;
+        delete imageData.updatedAt;
+        delete imageData.createdAt;
+        // let reviewImage = await ReviewImage.findOne({
+        //     attributes: ['id', 'url'],
+        //     where: {
+        //         reviewId: reviewId
+        //     }
+        // })
         // console.log(test)
 
-
-
         return res.json(
-            reviewImage
+            imageData
         )
     }
 )
