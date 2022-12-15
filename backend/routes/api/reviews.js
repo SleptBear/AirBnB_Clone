@@ -97,14 +97,14 @@ router.get(
 
                 Reviews.push(spot.toJSON())
             })
-            for(i=0; i < Reviews.length; i++) {
-                let spotImage = await SpotImage.findOne({
-                    where: {
-                        spotId: userReviews[i].Spot.id
-                    }
-                })
-                Reviews[i].Spot.previewImage = spotImage.url
-            }
+            // for(i=0; i < Reviews.length; i++) {
+            //     let spotImage = await SpotImage.findOne({
+            //         where: {
+            //             spotId: userReviews[i].Spot.id
+            //         }
+            //     })
+            //     Reviews[i].Spot.previewImage = spotImage.url
+            // }
 // in future refactor findOne to findAll in case of multiple images
         res.json({
             Reviews
