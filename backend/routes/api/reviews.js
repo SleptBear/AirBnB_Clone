@@ -7,6 +7,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 const { getCurrentUserById } = require('../../db/models/user');
 // const review = require('../../db/models/review');
 
+//post image for image specified by id
 router.post(
     '/:reviewId/images',
     async (req, res) => {
@@ -48,6 +49,7 @@ router.post(
     }
 )
 
+//get all current users reviews
 router.get(
     '/current',
     restoreUser,
@@ -112,6 +114,7 @@ router.get(
     }
 )
 
+//edits a review by id
 router.put(
     '/:reviewId',
     restoreUser,
@@ -149,7 +152,7 @@ router.put(
         review.stars = stars;
 
         await review.save();
-
+        //maybe look for update method to manipulate object and save it all at once
 
         res.json(
             review
@@ -157,6 +160,7 @@ router.put(
     }
 )
 
+//removes review by id
 router.delete(
     '/:reviewId',
     restoreUser,
@@ -187,13 +191,7 @@ router.delete(
                 "statusCode": 200
               })
         }
-
-
-
-        res.json('slipery slope')
     }
 )
-
-
 
 module.exports = router

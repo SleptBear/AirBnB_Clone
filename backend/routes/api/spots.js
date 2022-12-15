@@ -33,7 +33,6 @@ const validateCreation = [
   ];
 
 
-
 //get all spots
 router.get(
     '/',

@@ -106,9 +106,7 @@ router.delete(
               })
         }
 
-
         await booking.destroy()
-
 
            return res.json({
                 "message": "Successfully deleted",
@@ -161,7 +159,6 @@ router.put(
         });
 
         await booking.save()
-
         res.json(booking)
     }
 )
