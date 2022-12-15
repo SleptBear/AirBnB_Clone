@@ -56,7 +56,7 @@ router.get(
         let user = req.user.dataValues
         // console.log(user)
         // console.log(user.id)
-    let userReviews = await Review.findAll({
+    let Reviews = await Review.findAll({
         where: {
             userId: user.id
         },
@@ -92,11 +92,11 @@ router.get(
     //     }
     // })
 
-    let Reviews = []
-            userReviews.forEach(spot => {
+    // let Reviews = []
+    //         userReviews.forEach(spot => {
 
-                Reviews.push(spot.toJSON())
-            })
+    //             Reviews.push(spot.toJSON())
+    //         })
             // for(i=0; i < Reviews.length; i++) {
             //     let spotImage = await SpotImage.findOne({
             //         where: {
