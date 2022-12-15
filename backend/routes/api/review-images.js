@@ -6,7 +6,8 @@ const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const { getCurrentUserById } = require('../../db/models/user');
 
-
+//I should refactor this below to DRY up missing spot or wrong user
+//delete review Image by id
 router.delete(
     '/:reviewImageId',
     restoreUser,
@@ -14,8 +15,6 @@ router.delete(
     async (req, res) => {
         let reviewImageId = req.params.reviewImageId
         let user = req.user
-
-
 
         let image = await ReviewImage.findOne({
             where: {
@@ -56,11 +55,6 @@ router.delete(
             )
     }
 )
-
-
-
-
-
 
 
 module.exports = router

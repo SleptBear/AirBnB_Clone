@@ -7,6 +7,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 const { getCurrentUserById } = require('../../db/models/user');
 // const review = require('../../db/models/review');
 
+//post image for image specified by id
 router.post(
     '/:reviewId/images',
     async (req, res) => {
@@ -29,23 +30,26 @@ router.post(
             reviewId,
             url,
         })
-        // console.log(newImage)
-        let reviewImage = await ReviewImage.findOne({
-            attributes: ['id', 'url'],
-            where: {
-                reviewId: reviewId
-            }
-        })
+        console.log(newImage)
+        let imageData = newImage.dataValues
+        delete imageData.reviewId;
+        delete imageData.updatedAt;
+        delete imageData.createdAt;
+        // let reviewImage = await ReviewImage.findOne({
+        //     attributes: ['id', 'url'],
+        //     where: {
+        //         reviewId: reviewId
+        //     }
+        // })
         // console.log(test)
 
-
-
         return res.json(
-            reviewImage
+            imageData
         )
     }
 )
 
+//get all current users reviews
 router.get(
     '/current',
     restoreUser,
@@ -54,7 +58,7 @@ router.get(
         let user = req.user.dataValues
         // console.log(user)
         // console.log(user.id)
-    let userReviews = await Review.findAll({
+    let Reviews = await Review.findAll({
         where: {
             userId: user.id
         },
@@ -90,19 +94,19 @@ router.get(
     //     }
     // })
 
-    let Reviews = []
-            userReviews.forEach(spot => {
+    // let Reviews = []
+    //         userReviews.forEach(spot => {
 
-                Reviews.push(spot.toJSON())
-            })
-            for(i=0; i < Reviews.length; i++) {
-                let spotImage = await SpotImage.findOne({
-                    where: {
-                        spotId: userReviews[i].Spot.id
-                    }
-                })
-                Reviews[i].Spot.previewImage = spotImage.url
-            }
+    //             Reviews.push(spot.toJSON())
+    //         })
+            // for(i=0; i < Reviews.length; i++) {
+            //     let spotImage = await SpotImage.findOne({
+            //         where: {
+            //             spotId: userReviews[i].Spot.id
+            //         }
+            //     })
+            //     Reviews[i].Spot.previewImage = spotImage.url
+            // }
 // in future refactor findOne to findAll in case of multiple images
         res.json({
             Reviews
@@ -110,6 +114,7 @@ router.get(
     }
 )
 
+//edits a review by id
 router.put(
     '/:reviewId',
     restoreUser,
@@ -147,7 +152,7 @@ router.put(
         review.stars = stars;
 
         await review.save();
-
+        //maybe look for update method to manipulate object and save it all at once
 
         res.json(
             review
@@ -155,6 +160,7 @@ router.put(
     }
 )
 
+//removes review by id
 router.delete(
     '/:reviewId',
     restoreUser,
@@ -185,13 +191,7 @@ router.delete(
                 "statusCode": 200
               })
         }
-
-
-
-        res.json('slipery slope')
     }
 )
-
-
 
 module.exports = router

@@ -33,7 +33,6 @@ const validateCreation = [
   ];
 
 
-
 //get all spots
 router.get(
     '/',
@@ -145,8 +144,6 @@ router.get(
 //             // console.log(preview)
 
         })
-
-
         return res.json({
             Spots,
             page,
@@ -154,7 +151,6 @@ router.get(
         });
     }
 )
-
 
 
 // create and post a spot
@@ -187,18 +183,74 @@ router.post(
     }
 )
 
+//create and post image based on spotId
+// router.post(
+//     '/:spotId/images',
+//     restoreUser,
+//     requireAuth,
+//     async (req, res) => {
+//         // let imageResponse = []
+//         let spotId = req.params.spotId
+//         let url = req.body.url
+//         let preview = req.body.preview
+//         console.log(spotId)
+//         // console.log(url)
+//         // console.log(preview)
+//         let spot = await Spot.findByPk(spotId)
+//         if (!spot) {
+//             res.status(404)
+//             res.send({
+
+//                     "message": "Spot couldn't be found",
+//                     "statusCode": 404
+
+//             })
+//         }
+//         // let spotImage = await SpotImage.addImage({
+//         //     url, preview, spotId })
+//         // console.log('STARTS AS', spotImage)
+//         // console.log('WANT TO CONVERT TO', spotImage.toJSON())
+//         // let resultImage = JSON.stringify(spotImage)
+//         // console.log("FINAL RESULT SHOULD LOOK LIKE", resultImage)
+//         // let parsed = JSON.stringify(resultImage)
+//         // imageResponse.spotId = parsed.spotId
+//         // imageResponse.spotId = parsed.url
+//         // imageResponse.spotId = parsed.preview
+//         // console.log(JSON.stringify(spotImage.dataValues))
+//         // imageResponse.id = JSON.stringify(spotImage.dataValues.id)
+//         // imageResponse.url = JSON.stringify(spotImage.dataValues.url)
+//         // imageResponse.preview = JSON.stringify(spotImage.dataValues.preview)
+//             // spotImage.toJSON()
+//             // JSON.stringify(spotImage);
+//             // delete spotImage.updatedAt;
+//             // delete spotImage.createdAt;
+//             // delete spotImage.spotId;
+
+//             let id = spotId
+//             let returnObject = {id, url, preview}
+
+//         spot.createSpotImage({
+//             spotId,
+//             url,
+//             preview
+//         })
+//         res.json(
+//             returnObject
+//         );
+//      }
+
+// )
+
+//create and post image based on spotId
 router.post(
     '/:spotId/images',
     restoreUser,
     requireAuth,
     async (req, res) => {
-        // let imageResponse = []
-        let spotId = req.params.spotId
-        let url = req.body.url
-        let preview = req.body.preview
-        console.log(spotId)
-        // console.log(url)
-        // console.log(preview)
+        let spotId = req.params.spotId;
+        let url = req.body.url;
+        let preview = req.body.preview;
+
         let spot = await Spot.findByPk(spotId)
         if (!spot) {
             res.status(404)
@@ -209,41 +261,32 @@ router.post(
 
             })
         }
-        // let spotImage = await SpotImage.addImage({
-        //     url, preview, spotId })
-        // console.log('STARTS AS', spotImage)
-        // console.log('WANT TO CONVERT TO', spotImage.toJSON())
-        // let resultImage = JSON.stringify(spotImage)
-        // console.log("FINAL RESULT SHOULD LOOK LIKE", resultImage)
-        // let parsed = JSON.stringify(resultImage)
-        // imageResponse.spotId = parsed.spotId
-        // imageResponse.spotId = parsed.url
-        // imageResponse.spotId = parsed.preview
-        // console.log(JSON.stringify(spotImage.dataValues))
-        // imageResponse.id = JSON.stringify(spotImage.dataValues.id)
-        // imageResponse.url = JSON.stringify(spotImage.dataValues.url)
-        // imageResponse.preview = JSON.stringify(spotImage.dataValues.preview)
-            // spotImage.toJSON()
-            // JSON.stringify(spotImage);
-            // delete spotImage.updatedAt;
-            // delete spotImage.createdAt;
-            // delete spotImage.spotId;
 
-            let id = spotId
-
-            let returnObject = {id, url, preview}
-
-        spot.createSpotImage({
+        let image = await SpotImage.create({
             spotId,
             url,
             preview
         })
-        res.json(
-            returnObject
-    );
-     }
 
-)
+        // let finder = await SpotImage.findAll({
+        //     where: {
+        //         spotId: spotId
+        //     },
+        // //         attributes: {
+        // //             exclude: ['spotId']
+        // //         }
+
+        // })
+
+        // console.log(image)
+        let imageData = image.dataValues
+        delete imageData.spotId;
+        delete imageData.updatedAt;
+        delete imageData.createdAt;
+
+        res.json(imageData);
+        // res.json(finder)
+    })
 
 //get current users spots
 router.get('/current', restoreUser, requireAuth,
@@ -470,8 +513,6 @@ router.post(
     requireAuth,
     async (req, res) => {
 
-
-
         let spotId = Number(req.params.spotId)
         let userId = req.user.dataValues.id
         let review = req.body.review
@@ -642,7 +683,6 @@ if(!(await Spot.findOne({
       })
 }
 
-
         if(test) {
             res.status(403);
             return res.json({
@@ -655,7 +695,6 @@ if(!(await Spot.findOne({
               })
         }
 
-
         let Bookings = await Booking.create({
             spotId,
             userId,
@@ -666,8 +705,6 @@ if(!(await Spot.findOne({
         res.json(Bookings)
     }
 )
-
-
 
 
 router.get(
