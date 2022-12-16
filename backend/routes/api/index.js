@@ -6,14 +6,14 @@ const reviewsRouter = require('./reviews.js');
 const spotImagesRouter = require('./spot-images.js');
 const reviewImagesRouter = require('./review-images.js');
 const bookingsRouter = require('./bookings.js');
-// const { restoreUser } = require('../../utils/auth.js');
+const { restoreUser } = require('../../utils/auth.js');
 
 // GET /api/set-token-cookie
 // const { setTokenCookie } = require('../../utils/auth.js');
 // const { User } = require('../../db/models');
 // const { requireAuth } = require('../../utils/auth.js');
 
-// router.use(restoreUser);  //think these can both be removed because im done testing this router file further below in test routes.
+router.use(restoreUser);  //think these can both be removed because im done testing this router file further below in test routes.
 
 // router.use(requireAuth);  //might add this in later but probably not based on line 17
 
