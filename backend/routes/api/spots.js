@@ -8,27 +8,50 @@ const { getCurrentUserById } = require('../../db/models/user');
 const user = require('../../db/models/user');
 
 
-
+//each check must pass only on .argument and .with message
 const validateCreation = [
     check('address')
       .exists({ checkFalsy: true })
-      .isLength({ min: 4 })
-      .withMessage('Please provide a address with at least 4 characters.'),
+    //   .isLength({ min: 4 })
+      .withMessage('Street address is required'),
     check('city')
-      .isLength({ min: 3 })
-      .withMessage('Please provide a valid city.'),
+      .exists({ checkFalsy: true })
+    //   .isLength({ min: 3 })
+      .withMessage('City is required'),
     check('state')
       .exists({ checkFalsy: true })
-      .isLength({ min: 2 })
-      .withMessage('Please do not abbreviate state'),
+    //   .isLength({ min: 2 })
+      .withMessage('State is required'),
     check('country')
       .exists({ checkFalsy: true })
-      .isLength({ min: 2 })
-      .withMessage('Please provide a country with at least 2 characters.'),
+    //   .isLength({ min: 2 })
+      .withMessage('Country is required'),
     check('name')
+    //   .exists({ checkFalsy: true })
+    //   .custom(value => {
+    //     if(value.length >= 50) {
+    //         return Promise.reject('Name must be less than 50 characters')
+    //     }
+    //   })
+      .isLength({ max: 49 })
+      .withMessage('Name must be less than 50 characters'),
+    // check('name').custom(value => {
+    //     if(value.length >= 10) {
+    //         return Promise.reject('Name must be less than 50 characters')
+    //     }
+    //   }),
+    check('lng')
       .exists({ checkFalsy: true })
-      .isLength({ min: 2 })
-      .withMessage('Name must be 2 characters or more.'),
+      .withMessage('Longitude is not valid'),
+    check('lat')
+      .exists({ checkFalsy: true })
+      .withMessage('Latitude is not valid'),
+    check('description')
+        .exists({ checkFalsy: true })
+        .withMessage('Description is required'),
+    check('price')
+        .exists({ checkFalsy: true })
+        .withMessage('Price per day is required'),
     handleValidationErrors
   ];
 
@@ -39,24 +62,25 @@ router.get(
     async (req, res) => {
         // const spots = await Spot.scope(["itsReview", "itsImage"]).findAll({
         let { page, size } = req.query;
-        // console.log(page, size);
+        // let { minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
+        console.log(page, size);
         page = Number(page);
         size = Number(size);
-
+        console.log(page, size);
         if(isNaN(page)) page = 1;
         if(page>10) page = 10;
         if(isNaN(size)) size = 20;
         if(size>20) size = 20;
 
-        let pagination = {};
-        pagination.limit = page * (page - 1);
-        pagination.offset = size
+        // let pagination = {};
+        // pagination.limit = page * (page - 1);
+        // pagination.offset = size
 
 
         const spots = await Spot.findAll({
             // group: 'Spot.id',
-            // limit: size,
-            // offset: (page-1) * size,
+            limit: size,
+            offset: (page-1) * size,
             include: [
             {
                     model: Review,
@@ -508,11 +532,27 @@ await spot.reload()
     }
 )
 
+const reviewValidation = [
+    check('review')
+        .exists({ checkFalsy: true })
+        .withMessage("Review text is required"),
+    check('stars')
+        .exists({ checkFalsy: true })
+        .withMessage('Stars must be an integer from 1 to 5'),
+    // check('stars').custom(value => {
+    //         if(value > 5 || value < 1) {
+    //             return Promise.reject('Stars must be an integer from 1 to 5')
+    //         }
+    //       }),
+    handleValidationErrors
+]
+
 
 router.post(
     '/:spotId/reviews',
     restoreUser,
     requireAuth,
+    reviewValidation,
     async (req, res) => {
 
         let spotId = Number(req.params.spotId)
@@ -520,6 +560,7 @@ router.post(
         let review = req.body.review
         let stars = req.body.stars
         // console.log(typeof spotId, typeof userId, typeof review, typeof stars)
+
 
 
         if (await Review.findOne({
@@ -568,7 +609,8 @@ if (fakeSpot === null) {
     }
 )
 
-
+//get all reviews for a spot based on Id
+//returns not found if no reviews but should probably return empty array or smthn instead
 router.get(
     '/:spotId/reviews',
     async (req, res) => {
@@ -650,6 +692,9 @@ router.delete(
     }
 )
 
+
+
+
 router.post(
     '/:spotIdForBooking/bookings',
     restoreUser,
@@ -659,17 +704,30 @@ router.post(
         let spotId = Number(req.params.spotIdForBooking);
         let startDate = new Date(req.body.startDate);
         let endDate = new Date(req.body.endDate);
-console.log(typeof userId, typeof spotId, typeof startDate, typeof endDate)
-
+// console.log(typeof userId, typeof spotId, typeof startDate, typeof endDate)
+// console.log(startDate)
+// console.log(endDate)
+// console.log(startDate < endDate)
+// return res.json('stop here')
+if(startDate > endDate) {
+    res.status(400)
+    return res.json({
+        "message": "Validation error",
+        "statusCode": 400,
+        "errors": [
+          "endDate cannot be on or before startDate"
+  ]
+    })
+}
        let test =  await Booking.findOne({
             where: {
                 spotId: spotId,
-                userId: userId,
+                // userId: userId,
                 startDate: startDate,
                 endDate: endDate
             }
         })
-console.log(test)
+// console.log(test)
 
 
 
@@ -719,21 +777,16 @@ router.get(
         // console.log(typeof spotId)
         let userId = Number(req.user.id)
 
-        // let Bookings = await Booking.findAll({
-        //     where: {
-        //         spotId: spotId
-        //     },
-        //     attributes: ['spotId', 'startDate', 'endDate']
-        // })
 
-        // console.log(userId, spotId)
-        // if (userId === spotId){
-        // return res.json({Bookings})
-        // }
+        let spot = await Spot.findByPk(spotId);
+        let spotData;
+        // console.log(spot)
+        if(spot) spotData = spot.dataValues
+        let Bookings;
+        if(spotData && spotData.ownerId === userId) {
 
 
-
-        let Bookings = await Booking.findAll({
+        Bookings = await Booking.findAll({
             where: {
                 spotId: spotId
             },
@@ -743,6 +796,15 @@ router.get(
             }
             ]
         });
+    } else {
+        Bookings = await Booking.findAll({
+            where: {
+                spotId: spotId
+            },
+            attributes: ['spotId', 'startDate', 'endDate']
+        });
+    }
+
 // console.log(spotBookings[0])
         if(!Bookings[0]) {
             res.status(404);
@@ -758,4 +820,5 @@ router.get(
 
 
 
-module.exports = router
+module.exports =
+    router
