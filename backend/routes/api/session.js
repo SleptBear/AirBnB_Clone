@@ -24,7 +24,7 @@ router.post(
     async (req, res, next) => {
       const { credential, password } = req.body;
 
-      const user = await User.login({ credential, password });
+      let user = await User.login({ credential, password });
 
       if (!user) {
         const err = new Error('Login failed');
@@ -36,9 +36,13 @@ router.post(
 
       await setTokenCookie(res, user);
       const csrfToken = req.csrfToken();
+      console.log(user)
+      user = user.dataValues
+      delete user.createdAt;
+      delete user.updatedAt;
+      user.token = csrfToken
       return res.json({
-        user,
-        'XSRF-Token': csrfToken
+        user
       });
     }
   );

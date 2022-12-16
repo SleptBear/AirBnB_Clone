@@ -369,9 +369,11 @@ async (req, res) => {
 //get details of spot by Id
 router.get(
     '/:spotId',
+    restoreUser,
     async (req, res) => {
 
         // console.log(req.params.spotId)
+        // console.log(req.user)
         const owner = await User.findOne({
             where: {
                 id: req.user.dataValues.id
