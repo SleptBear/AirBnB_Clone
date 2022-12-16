@@ -5,7 +5,23 @@ const { User, Spot, Review, SpotImage, booking, ReviewImage, sequelize } = requi
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const { getCurrentUserById } = require('../../db/models/user');
+// const { reviewValidation } = require('../api/spots')
 // const review = require('../../db/models/review');
+
+const reviewValidation = [
+    check('review')
+        .exists({ checkFalsy: true })
+        .withMessage("Review text is required"),
+    check('stars')
+        .exists({ checkFalsy: true })
+        .withMessage('Stars must be an integer from 1 to 5'),
+    // check('stars').custom(value => {
+    //         if(value > 5 || value < 1) {
+    //             return Promise.reject('Stars must be an integer from 1 to 5')
+    //         }
+    //       }),
+    handleValidationErrors
+]
 
 //post image for image specified by id
 router.post(
@@ -13,6 +29,24 @@ router.post(
     async (req, res) => {
         let url = req.body.url
         let reviewId = req.params.reviewId
+
+        if(((test = await Review.findOne({
+            where: {
+                id: reviewId
+            },
+            include: [
+                {
+                    model: ReviewImage
+                }
+            ]
+                                })
+        ).ReviewImages.length > 10)) {
+            res.status(403)
+        return res.json({
+            message: "Maximum number of images for this resource was reached",
+            statusCode: 403
+        })
+    }
 
         let possibleReview = await Review.findByPk(Number(reviewId))
         if(possibleReview === null) {
@@ -119,6 +153,7 @@ router.put(
     '/:reviewId',
     restoreUser,
     requireAuth,
+    reviewValidation,
     async (req, res) => {
         let reviewId = req.params.reviewId
 

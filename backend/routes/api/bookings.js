@@ -115,6 +115,9 @@ router.delete(
     }
 )
 
+//edit a booking
+//could maybe look to implement edit of times for bookng to be altered
+//dont think this is very helpful for airbnb though
 router.put(
     '/:bookingId',
     restoreUser,
@@ -145,11 +148,42 @@ router.put(
             }
         })
 
+
+
         if(!booking) {
             res.status(404);
             return res.json({
                 "message": "Booking couldn't be found",
                 "statusCode": 404
+              })
+        }
+        // console.log(booking.startDate < Date.now())
+        if(booking.startDate < Date.now()) {
+            res.status(403)
+            return res.json({
+                message: "Past bookings can't be modified",
+                statusCode: 403
+            })
+        }
+
+        let test =  await Booking.findOne({
+            where: {
+                spotId: booking.dataValues.spotId,
+                // userId: user.id,
+                startDate: startDate,
+                endDate: endDate
+            }
+        })
+
+        if(test) {
+            res.status(403);
+            return res.json({
+                "message": "Sorry, this spot is already booked for the specified dates",
+                "statusCode": 403,
+                "errors": [
+                  "Start date conflicts with an existing booking",
+                  "End date conflicts with an existing booking"
+                ]
               })
         }
 
